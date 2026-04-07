@@ -1,9 +1,566 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta http-equiv="refresh" content="0; url=https://github.com/devideoxmor/bhabi/releases/download/deal/sexy.video.call.apk">
-    <title>Redirecting...</title>
-  </head>
-  <body>
-  </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Firebase Config Inspector | JSON Data Viewer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a2a2f 0%, #0a1a1f 100%);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Fira Code', monospace;
+            padding: 2rem 1.5rem;
+            min-height: 100vh;
+            color: #eef4ff;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* header */
+        .header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .header h1 {
+            font-size: 2.4rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #B9F3FF, #7EC8E0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+            letter-spacing: -0.3px;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(0, 212, 180, 0.15);
+            backdrop-filter: blur(4px);
+            padding: 0.35rem 1.2rem;
+            border-radius: 60px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            border: 1px solid rgba(94, 234, 212, 0.4);
+            color: #b3f0e6;
+        }
+
+        .badge::before {
+            content: "🔥";
+            font-size: 1rem;
+        }
+
+        /* dual panel layout */
+        .dashboard {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .panel {
+            background: rgba(15, 30, 35, 0.75);
+            backdrop-filter: blur(2px);
+            border-radius: 2rem;
+            border: 1px solid rgba(72, 187, 174, 0.3);
+            overflow: hidden;
+            box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.4);
+            transition: all 0.2s;
+        }
+
+        .panel-json {
+            flex: 1.2;
+            min-width: 320px;
+        }
+
+        .panel-card {
+            flex: 0.9;
+            min-width: 300px;
+        }
+
+        .panel-header {
+            background: rgba(0, 30, 34, 0.7);
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(72, 187, 174, 0.4);
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+
+        .panel-header i {
+            font-style: normal;
+            font-size: 1.3rem;
+        }
+
+        .content {
+            padding: 1.5rem;
+        }
+
+        /* JSON viewer */
+        .json-viewer {
+            background: #0b1b1f;
+            border-radius: 1.2rem;
+            overflow: auto;
+            font-family: 'Fira Code', 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            max-height: 70vh;
+            padding: 1rem;
+            border: 1px solid #2a4d55;
+            box-shadow: inset 0 1px 3px #00000020;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            color: #d4f1f9;
+        }
+
+        /* key-value card */
+        .config-card {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .config-item {
+            background: #0f262c;
+            border-radius: 1.2rem;
+            padding: 0.9rem 1.2rem;
+            border-left: 4px solid #2bc9b0;
+            transition: all 0.2s;
+        }
+
+        .config-key {
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #9ad8e8;
+            margin-bottom: 0.4rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            word-break: break-word;
+        }
+
+        .config-value {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #f0fcf9;
+            background: #03161b;
+            padding: 0.5rem 0.8rem;
+            border-radius: 1rem;
+            word-break: break-all;
+            white-space: pre-wrap;
+            border: 1px solid #2e6f6b;
+        }
+
+        .copy-btn {
+            background: none;
+            border: none;
+            color: #6bc7bc;
+            cursor: pointer;
+            font-size: 0.75rem;
+            margin-left: 8px;
+            transition: 0.2s;
+            background: #1f4048;
+            border-radius: 40px;
+            padding: 2px 8px;
+            font-weight: 500;
+        }
+
+        .copy-btn:hover {
+            background: #2d6a66;
+            color: white;
+        }
+
+        .alert-copy {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #1f5e5b;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            backdrop-filter: blur(8px);
+            transition: opacity 0.2s;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2.5rem;
+            font-size: 0.75rem;
+            opacity: 0.6;
+            border-top: 1px dashed #2a6a63;
+            padding-top: 1.5rem;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        @media (max-width: 780px) {
+            body {
+                padding: 1rem;
+            }
+            .panel-header {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>⚡ Firebase Client Config Inspector</h1>
+        <div class="badge">Extracted from Android strings / google-services data</div>
+        <p style="margin-top: 12px; font-size: 0.9rem;">Raw JSON representation of Firebase configuration values</p>
+    </div>
+
+    <div class="dashboard">
+        <!-- JSON PREVIEW PANEL -->
+        <div class="panel panel-json">
+            <div class="panel-header">
+                <i>📄</i> <span>Firebase Config · JSON</span>
+                <button id="copyJsonBtn" class="copy-btn" style="margin-left: auto; background:#2a5550;">📋 Copy JSON</button>
+            </div>
+            <div class="content">
+                <div class="json-viewer" id="jsonContainer">
+                    <pre id="jsonPretty">Loading Firebase data...</pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- STRUCTURED CARDS PANEL -->
+        <div class="panel panel-card">
+            <div class="panel-header">
+                <i>🏷️</i> <span>Parsed Credentials & Keys</span>
+            </div>
+            <div class="content">
+                <div class="config-card" id="cardsContainer">
+                    <!-- dynamic cards will be injected -->
+                    <div class="config-item">Loading configuration...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer>
+        🔍 Data extracted from resource strings: google_app_id, google_api_key, gcm_defaultSenderId, storage bucket, etc.<br>
+        All values reflect original Firebase/Google services metadata.
+    </footer>
+</div>
+<div id="copyToast" class="alert-copy">📋 JSON copied to clipboard</div>
+
+<script>
+    // --------------------------------------------------------------
+    // RAW FIREBASE DATA extracted from the provided strings xml snippet
+    // Includes all relevant firebase / google services fields
+    // --------------------------------------------------------------
+    const firebaseData = {
+        "fcm_fallback_notification_channel_label": "Miscellaneous",
+        "gcm_defaultSenderId": "407145950785",
+        "google_api_key": "AIzaSyB2eDre6O_WIEpCwek8Ff-vRb15m-oTAQc",
+        "google_app_id": "1:407145950785:android:4eea5446bb538c90fea0c0",
+        "google_crash_reporting_api_key": "AIzaSyB2eDre6O_WIEpCwek8Ff-vRb15m-oTAQc",
+        "google_pay": "Google Pay",
+        "google_storage_bucket": "ghostx-panel.firebasestorage.app",
+        // Additional common Firebase / google-services identifiers (some are inferred from pattern or present in snippet)
+        "project_id": "ghostx-panel",               // derived from storage bucket and google_app_id pattern
+        "firebase_database_url": null,               // not explicitly in snippet, kept for completeness
+        "google_analytics_tracking_id": null,
+        "google_services_platform": "android"
+    };
+
+    // Add extra contextual metadata from app ID & sender ID
+    // parse senderId to show numeric project number
+    if (firebaseData.gcm_defaultSenderId) {
+        firebaseData["project_number"] = firebaseData.gcm_defaultSenderId;
+    }
+    // derive possible project name from app_id pattern (1:PROJ:android:hash)
+    if (firebaseData.google_app_id && firebaseData.google_app_id.includes(":")) {
+        const parts = firebaseData.google_app_id.split(":");
+        if (parts.length >= 2) {
+            firebaseData["numeric_project_id"] = parts[1];
+        }
+    }
+    // also include some friendly info
+    firebaseData["resource_origin"] = "strings.xml / FCM config";
+    
+    // Remove any null entries for cleaner display (optional)
+    const cleanedData = {};
+    for (const [key, val] of Object.entries(firebaseData)) {
+        if (val !== null && val !== undefined) {
+            cleanedData[key] = val;
+        }
+    }
+    
+    // --------------------------------------------------------------
+    // RENDER JSON pretty with syntax highlighting (basic inline)
+    // --------------------------------------------------------------
+    const jsonContainer = document.getElementById('jsonPretty');
+    const cardsContainer = document.getElementById('cardsContainer');
+    const copyJsonBtn = document.getElementById('copyJsonBtn');
+    const toast = document.getElementById('copyToast');
+    
+    function formatJSON(data) {
+        try {
+            return JSON.stringify(data, null, 2);
+        } catch(e) {
+            return "{ \"error\": \"Cannot stringify data\" }";
+        }
+    }
+    
+    // Highlight JSON in pre block (minimal but readable)
+    function renderJSONPretty() {
+        const jsonStr = formatJSON(cleanedData);
+        // simple escape HTML
+        const escaped = escapeHtml(jsonStr);
+        // optional: simple syntax highlight for keys/values (monospace)
+        // we'll just wrap with pre
+        jsonContainer.innerHTML = `<pre>${escaped}</pre>`;
+    }
+    
+    // Helper: escape HTML special chars
+    function escapeHtml(str) {
+        return str.replace(/[&<>]/g, function(m) {
+            if (m === '&') return '&amp;';
+            if (m === '<') return '&lt;';
+            if (m === '>') return '&gt;';
+            return m;
+        }).replace(/[\uD800-\uDBFF][\uDC00-\uDFFF]/g, function(c) {
+            return c;
+        });
+    }
+    
+    // --------------------------------------------------------------
+    // Render cards: show each key-value pair in elegant layout
+    // --------------------------------------------------------------
+    function renderCards() {
+        const entries = Object.entries(cleanedData);
+        if (entries.length === 0) {
+            cardsContainer.innerHTML = '<div class="config-item">⚠️ No configuration data found.</div>';
+            return;
+        }
+        
+        let cardsHtml = '';
+        for (const [key, value] of entries) {
+            // format value nicely (stringify if object, but here all primitives)
+            let displayValue = (typeof value === 'object' && value !== null) ? JSON.stringify(value) : String(value);
+            // truncate extremely long values? keep full for transparency
+            cardsHtml += `
+                <div class="config-item">
+                    <div class="config-key">
+                        <span>🔑 ${escapeHtml(key)}</span>
+                        <button class="copy-btn copy-field-btn" data-key="${escapeHtml(key)}" data-value="${escapeHtml(displayValue)}">📋 Copy</button>
+                    </div>
+                    <div class="config-value">${escapeHtml(displayValue)}</div>
+                </div>
+            `;
+        }
+        cardsContainer.innerHTML = cardsHtml;
+        
+        // attach copy handlers for each field button
+        document.querySelectorAll('.copy-field-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const rawValue = btn.getAttribute('data-value');
+                if (rawValue) {
+                    copyToClipboard(rawValue);
+                    showToast(`Copied value: ${rawValue.substring(0, 40)}${rawValue.length > 40 ? '…' : ''}`);
+                } else {
+                    const key = btn.getAttribute('data-key');
+                    const valueDiv = btn.closest('.config-item')?.querySelector('.config-value');
+                    if (valueDiv) {
+                        const textToCopy = valueDiv.innerText;
+                        copyToClipboard(textToCopy);
+                        showToast(`Copied "${key}" value`);
+                    }
+                }
+            });
+        });
+    }
+    
+    // Global copy function
+    function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text).catch(err => {
+                fallbackCopy(text);
+            });
+        } else {
+            fallbackCopy(text);
+        }
+    }
+    
+    function fallbackCopy(text) {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+    }
+    
+    function showToast(msg) {
+        if (!toast) return;
+        toast.textContent = msg || '📋 Copied to clipboard';
+        toast.style.opacity = '1';
+        toast.style.pointerEvents = 'none';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+        }, 1800);
+    }
+    
+    // copy full JSON
+    function copyFullJSON() {
+        const jsonString = formatJSON(cleanedData);
+        copyToClipboard(jsonString);
+        showToast('✅ Full Firebase JSON copied to clipboard');
+    }
+    
+    // --------------------------------------------------------------
+    // Additional enhancement: compute extra derived firebase fields 
+    // that are often present in google-services.json for context
+    // --------------------------------------------------------------
+    function enrichFirebaseContext() {
+        // if google_app_id exists, derive client_type and android_package_name (not provided, but keep placeholder)
+        if (cleanedData.google_app_id && !cleanedData.mobile_sdk_app_id) {
+            cleanedData.mobile_sdk_app_id = cleanedData.google_app_id;
+        }
+        // storage bucket explicit, show full endpoint
+        if (cleanedData.google_storage_bucket) {
+            cleanedData.storage_bucket_uri = `gs://${cleanedData.google_storage_bucket}`;
+        }
+        // API key present: show note
+        if (cleanedData.google_api_key) {
+            cleanedData.api_key_available = true;
+        }
+        // ensure the fcm channel label is included
+        if (!cleanedData.default_notification_channel) {
+            cleanedData.default_notification_channel = cleanedData.fcm_fallback_notification_channel_label || "Miscellaneous";
+        }
+    }
+    
+    enrichFirebaseContext();
+    // re-clean after enrichment (remove any possible nulls)
+    const finalData = {};
+    for (const [k, v] of Object.entries(cleanedData)) {
+        if (v !== null && v !== undefined) finalData[k] = v;
+    }
+    // replace cleanedData reference with final enriched
+    window.firebaseViewData = finalData;
+    
+    // update functions to use finalData
+    function refreshUI() {
+        const jsonStr = formatJSON(finalData);
+        jsonContainer.innerHTML = `<pre>${escapeHtml(jsonStr)}</pre>`;
+        // rebuild cards
+        const entries = Object.entries(finalData);
+        if (entries.length === 0) {
+            cardsContainer.innerHTML = '<div class="config-item">No configuration available.</div>';
+            return;
+        }
+        let cardsHtml = '';
+        for (const [key, value] of entries) {
+            let displayValue = (typeof value === 'object' && value !== null) ? JSON.stringify(value) : String(value);
+            cardsHtml += `
+                <div class="config-item">
+                    <div class="config-key">
+                        <span>🔑 ${escapeHtml(key)}</span>
+                        <button class="copy-btn copy-field-btn" data-key="${escapeHtml(key)}" data-value="${escapeHtml(displayValue)}">📋 Copy</button>
+                    </div>
+                    <div class="config-value">${escapeHtml(displayValue)}</div>
+                </div>
+            `;
+        }
+        cardsContainer.innerHTML = cardsHtml;
+        // re-attach copy field listeners
+        document.querySelectorAll('.copy-field-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const val = btn.getAttribute('data-value');
+                if (val) {
+                    copyToClipboard(val);
+                    showToast(`Copied value`);
+                } else {
+                    const parentDiv = btn.closest('.config-item');
+                    const valueDiv = parentDiv?.querySelector('.config-value');
+                    if (valueDiv) {
+                        copyToClipboard(valueDiv.innerText);
+                        showToast('Copied');
+                    }
+                }
+            });
+        });
+    }
+    
+    // override json copy button to copy final data
+    copyJsonBtn.onclick = () => {
+        const fullJson = formatJSON(finalData);
+        copyToClipboard(fullJson);
+        showToast('📋 Full Firebase JSON copied');
+    };
+    
+    // initial render
+    refreshUI();
+    
+    // optional: add a helper for "download JSON"
+    const downloadBtn = document.createElement('button');
+    downloadBtn.innerText = '⬇️ Download JSON';
+    downloadBtn.className = 'copy-btn';
+    downloadBtn.style.marginLeft = '10px';
+    downloadBtn.style.background = '#1a6b62';
+    const panelHeaderFirst = document.querySelector('.panel-json .panel-header');
+    if (panelHeaderFirst) {
+        const btnGroup = document.createElement('div');
+        btnGroup.style.display = 'flex';
+        btnGroup.style.gap = '8px';
+        btnGroup.style.marginLeft = 'auto';
+        const existingCopy = document.getElementById('copyJsonBtn');
+        if (existingCopy) {
+            const parent = existingCopy.parentNode;
+            parent.removeChild(existingCopy);
+            btnGroup.appendChild(existingCopy);
+        }
+        btnGroup.appendChild(downloadBtn);
+        panelHeaderFirst.appendChild(btnGroup);
+    }
+    
+    downloadBtn.addEventListener('click', () => {
+        const jsonStr = formatJSON(finalData);
+        const blob = new Blob([jsonStr], {type: 'application/json'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `firebase_config_${new Date().toISOString().slice(0,19)}.json`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('📁 JSON file downloaded');
+    });
+    
+    // Also add a tooltip / hint for credentials
+    console.log('Firebase Config Inspector ready — sensitive keys shown only for dev introspection');
+</script>
+</body>
 </html>
